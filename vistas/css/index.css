@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap');
+@import '../css/output.css';
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+    font-family: "Kode Mono", monospace;
+}
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #ffffff; 
+    padding: 10px; 
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end; 
+}
+
+header nav ul li {
+    margin-right: 20px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.9s;
+}
+
+header nav ul li a:hover {
+    color: #99ff33; 
+}
+#videoPrincipal video {
+    width: 100%;
+}
+
+#encabezadoPrincipal {
+    width: 100%;
+    height: 5%;
+    top: 0;
+    right: 0;
+    position: absolute;
+    display: flex;
+    text-align: center;
+    justify-content: flex-end;
+    background-color: white;
+}
+.TituloManzanas{
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.manzanasTexto1,.cuidadoTexto2{
+    font-size: 120px;
+    font-family: 'Roboto Condensed', sans-serif;
+    margin-top: 2%;
+    border-radius: 4%;
+    
+}
+.manzanasTexto1{
+    background-color: #891ad2;
+    color: rgb(15, 255, 51);
+}
+
+.cuidadoTexto2 {
+    background-color: #7b1abc;
+    color: rgb(255, 255, 255);
+    max-width: 75%;
+}
+#TextoIniciarSesion{
+    background-color: rgb(168,85,247);
+    text-align: center;
+    height:90px;
+    padding-top: 2%;
+    width: 450px;
+    margin: 5% 50% 0 35%;
+    border-radius: 30px;
+    color: white;
+    font-size: 60px;
+}
+.formulario{
+    display: block;
+    margin: 5% 40% 0 40%;
+    margin-bottom: 5%;
+}
+#b2{
+    height: 45px;
+    width: 262px;
+    right: 2px;
+    margin-bottom: 3%;
+    border-radius: 30px;
+    
+}
+#TextoRegistro{
+    background-color: rgb(168,85,247);
+    text-align: center;
+    height:90px;
+    padding-top: 2%;
+    width: 450px;
+    margin: 5% 0% 0 38%;
+    border-radius: 30px;
+    color: white;
+    font-size: 60px;
+}
+.formulario{
+    display: block;
+    margin: 5% 40% 0 40%;
+    margin-bottom: 5%;
+}
+body{
+    background-color: rgba(209, 197, 197, 0.608);
+}
+#contain-body{
+    background-color: #777777;
+    height: 55%;
+    width: 55%;
+    margin-left: 25%;
+    text-align: center;
+}
+#nMujeres{
+    margin-left: 20%;
+    color: rgba(216, 216, 216, 0.7);
+}
+#s_disponibles{
+    margin-left: 20%;
+} #contenedor_servicios{
+    margin-left: 20%;
+} 
+#formularioSeleServ{
+    margin-left: 20%;
+    background-color: rgba(209, 208, 208, 0.7);
+    width: 45%;
+    height: 48%;
+}
+#s_Seleccionados{
+    margin-left: 0%;
+}
+#DeleteButton{
+    border-radius: 10px;
+}
+#TablaServ{
+font-family: "Kode Mono", monospace;
+font-optical-sizing: auto;
+font-weight: 500;
+font-size: 17px;
+font-style: normal;
+}
+#nAdmin{
+    text-align: center;
+}
+#headerIndex{
+    margin-right: 15%;
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/output.css">
+    <title>Editar Manzana</title>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto py-8">
+        <div id="TextoRegistro" class="text-center mt-8 mr-2">
+            <p class="text-lg font-semibold">Editar Manzana</p>
+        </div>
+        <form id="editarManzanaForm" class="mx-auto max-w-xs mt-8 p-8 bg-white shadow-md rounded-lg formulario" method="post">
+            <label for="Nombre_Manzana" class="block mb-2">Nombre de la Manzana:</label>
+            <input type="text" name="Nombre_Manzana" id="Nombre_Manzana" class="w-full px-4 py-2 border rounded-lg mb-4">
+            <label for="Localidad" class="block mb-2">Localidad:</label>
+            <input type="text" name="Localidad" id="Localidad" class="w-full px-4 py-2 border rounded-lg mb-4">
+            <label for="Direccion" class="block mb-2">Dirección:</label>
+            <input type="text" name="Direccion" id="Direccion" class="w-full px-4 py-2 border rounded-lg mb-4">
+            <label for="Municipio" class="block mb-2">Municipio:</label>
+            <input type="text" name="Municipio" id="Municipio" class="w-full px-4 py-2 border rounded-lg mb-4">
+            <button type="submit" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600">Guardar Cambios</button>
+        </form>
+    </div>
+    <script>
+       function obtenerIdManzana() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+}
+const Cod_Manzana = obtenerIdManzana();
+    document.getElementById('editarManzanaForm').action = `http://localhost:3000/editar-manzana/${Cod_Manzana}`;
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/output.css">
+    <link href="../css/output.css" rel="stylesheet">
+    <title>Administrador</title>
+</head>
+<body class="bg-gray-100">
+    <div id="contain-body" class="max-w-4xl mx-auto py-8">
+        <h1 id="nAdmin" class="text-3xl font-bold mb-4">Hola!</h1>
+        <button id="UsuariosDispo" class="btn">Usuarios Registrados</button>
+        <button id="ManzanasDispo" class="btn">Manzanas</button>
+        <button id="ServiciosDispo" class="btn">Servicios</button>
+        <button id="botonCerrarSesion">Cerrar Sesión</button>
+    </div>
+    <div id="TablaUsers" class="max-w-4xl mx-auto py-8">
+       
+    </div>
+    <div id="TablaManzanas" class="max-w-4xl mx-auto py-8">
+
+    </div>
+    <div id="TablaServicios" class="max-w-4xl mx-auto py-8">
+
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const botonCerrarSesion=document.getElementById('botonCerrarSesion');
+            const params = new URLSearchParams(window.location.search);
+            const usuario = params.get('usuario');
+            const xhrAdmin = new XMLHttpRequest();
+            xhrAdmin.open('POST', '/obtener-admin', true)
+            xhrAdmin.onreadystatechange = function () {
+                if (xhrAdmin.readyState === 4) {
+                    if (xhrAdmin.status === 200) {
+                        const usuario = JSON.parse(xhrAdmin.responseText);
+                        document.getElementById('nAdmin').textContent = `Bienvenido Administrador ${usuario.Nombres}`;
+                    } else {
+                        console.error('Error al obtener el usuario', error)
+                    }
+                }
+            }
+            xhrAdmin.send();
+            const UsuariosDispo = document.getElementById('UsuariosDispo');
+            const TablaUsers = document.getElementById('TablaUsers');
+            UsuariosDispo.addEventListener('click', () => {
+                const xhrUsuariosDis = new XMLHttpRequest();
+                xhrUsuariosDis.open('POST', '/obtener-usuarios', true);
+                xhrUsuariosDis.setRequestHeader('Content-Type', 'application/json');
+                xhrUsuariosDis.onreadystatechange = function () {
+                    if (xhrUsuariosDis.readyState === 4) {
+                        if (xhrUsuariosDis.status === 200) {
+                            const data = JSON.parse(xhrUsuariosDis.responseText);
+                            TablaUsers.innerHTML = `
+                    <h1 id="nUsuarioServiciosAdmin" class="text-2xl font-semibold mb-4">Usuarios Disponibles</h1>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50 ml-10">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Mujer</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Documento</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número Documento</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombres</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellidos</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ciudad</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ocupación</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${data.lisusuariosadmin.map(usuario => `
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Id_Mujer}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Tipo_Documen}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Documento}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Nombres}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Apellidos}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Tel}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Correo_Elec}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Ciudad}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Direccion}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${usuario.Ocupacion}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="btn btn-outline-success" onclick="EditarUsu(${usuario.Id_Mujer})">Editar</button>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap ml-40">
+                                        <button class="btn btn-outline-success" onclick="EliminarUsuarios(${usuario.Id_Mujer})">Borrar</button>
+                                    </td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+                TablaUsers.style.display = 'block';
+                                TablaUsers.style.marginLeft='28%';
+                                TablaUsers.style.right='45%';
+                                TablaUsers.style.marginTop='7%';
+                                TablaUsers.style.border='1px black solid';
+                                TablaUsers.style.width='55%';
+                                TablaUsers.style.backgroundColor='rgba(209, 208, 208, 0.7)';  
+                                TablaUsers.style.textAlign="center";
+                        } else {
+                            console.error('Error al obtener usuarios', xhrUsuariosDis.status);
+                        }
+                    }
+                };
+                xhrUsuariosDis.send(JSON.stringify({}));
+            });
+            
+            const TablaManzanas = document.getElementById('TablaManzanas');
+            const ManzanasDispo = document.getElementById('ManzanasDispo')
+            ManzanasDispo.addEventListener('click', () => {
+                const xhrManzanasDis = new XMLHttpRequest();
+                xhrManzanasDis.open('POST', '/obtener-manzanas', true);
+                xhrManzanasDis.setRequestHeader('Content-Type', 'application/json');
+                xhrManzanasDis.onreadystatechange = function () {
+                    if (xhrManzanasDis.readyState === 4) {
+                        if (xhrManzanasDis.status === 200) {
+                            const data = JSON.parse(xhrManzanasDis.responseText);
+                            TablaManzanas.innerHTML = `
+                    <h1 id="nUsuarioManzanasAdmin" class="text-2xl font-semibold mb-4">Manzanas Disponibles</h1>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50 ml-10">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cod_Manzana</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre_Manzana</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Localidad</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Municipio</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${data.lisManzanasadmin.map(manzana => `
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">${manzana.Cod_Manzana}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${manzana.Nombre_Manzana}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${manzana.Localidad}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${manzana.Direccion}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${manzana.Municipio}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <button class="btn btn-outline-success" onclick="EditarManza(${manzana.Cod_Manzana})">Editar</button>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap ml-40">
+                                                <button class="btn btn-outline-success" onclick="CrearManza()">Crear</button>
+                                            </td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+                TablaManzanas.style.display = 'block';
+                TablaManzanas.style.marginLeft='35%';
+                TablaManzanas.style.right='35%';
+                TablaManzanas.style.marginTop='7%';
+                TablaManzanas.style.border='1px black solid';
+                TablaManzanas.style.width='37%';
+                TablaManzanas.style.backgroundColor='rgba(209, 208, 208, 0.7)';  
+                TablaManzanas.style.textAlign="center";
+                        } else {
+                            console.error('Error al obtener usuarios', xhrManzanasDis.status);
+                        }
+                    }
+                };
+                xhrManzanasDis.send(JSON.stringify({}));
+            });
+            const TablaServicios = document.getElementById('TablaServicios');
+            const ServiciosDispo = document.getElementById('ServiciosDispo')
+            ServiciosDispo.addEventListener('click', () => {
+                const xhrServiciosDis = new XMLHttpRequest();
+                xhrServiciosDis.open('POST', '/obtener-servicios', true);
+                xhrServiciosDis.setRequestHeader('Content-Type', 'application/json');
+                xhrServiciosDis.onreadystatechange = function () {
+                    if (xhrServiciosDis.readyState === 4) {
+                        if (xhrServiciosDis.status === 200) {
+                            const data = JSON.parse(xhrServiciosDis.responseText);
+                            TablaServicios.innerHTML = `
+                    <h1 id="nUsuarioServiciosAdmin" class="text-2xl font-semibold mb-4">Servicios Disponibles</h1>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50 ml-10">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cod_Serv</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom_Serv</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrip</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categ_Serv</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo_Serv</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${data.lisServiciosadmin.map(servicio => `
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">${servicio.Cod_Serv}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${servicio.Nom_Serv}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${servicio.Descripc}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${servicio.Categ_Serv}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${servicio.Tipo_Serv}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="btn btn-outline-success" onclick="EditarServicio(${servicio.Cod_Serv})">Editar</button>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap ml-40">
+                                            <button class="btn btn-outline-success" onclick="EliminarServicio(${servicio.Cod_Serv})">Borrar</button>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap ml-40">
+                                            <button class="btn btn-outline-success" onclick="CrearServicio()">Crear</button>
+                                        </td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+                TablaServicios.style.display = 'block';
+                TablaServicios.style.marginLeft='35%';
+                TablaServicios.style.right='35%';
+                TablaServicios.style.marginTop='7%';
+                TablaServicios.style.border='1px black solid';
+                TablaServicios.style.width='37%';
+                TablaServicios.style.backgroundColor='rgba(209, 208, 208, 0.7)';  
+                TablaServicios.style.textAlign="center";
+                        } else {
+                            console.error('Error al obtener usuarios', xhrServiciosDis.status);
+                        }
+                    }
+                };
+                xhrServiciosDis.send(JSON.stringify({}));
+            });
+        });
+        function EditarUsu(Id_Mujer){
+            const xhreditarusu = new XMLHttpRequest();
+            xhreditarusu.open('POST', `/editar-usuario/${Id_Mujer}`, true);
+            xhreditarusu.setRequestHeader('Content-Type', 'application/json');
+            xhreditarusu.onreadystatechange = function () {
+                        if (xhreditarusu.readyState === 4) {
+                            if (xhreditarusu.status === 200) {
+                               window.location=`../Vistas/HTML/actualizar.html?id=${Id_Mujer}`
+                            } else {
+                                console.error('Error al editar usuario');
+                            }
+                        }
+                    };
+                    xhreditarusu.send(JSON.stringify({ Id_Mujer: Id_Mujer }));  
+        }
+        function EditarServicio(Cod_Servicio) {
+        const xhrEditarServicio = new XMLHttpRequest();
+        xhrEditarServicio.open('POST', `/editar-servicios/${Cod_Servicio}`, true);
+        xhrEditarServicio.setRequestHeader('Content-Type', 'application/json');
+        xhrEditarServicio.onreadystatechange = function () {
+            if (xhrEditarServicio.readyState === 4) {
+                if (xhrEditarServicio.status === 200) {
+                    window.location = `../Vistas/HTML/actualizarServ.html?id=${Cod_Servicio}`;
+                } else {
+                    console.error('Error al editar servicio');
+                }
+        }
+    };
+    xhrEditarServicio.send(JSON.stringify({ Cod_Servicio: Cod_Servicio }));
+}
+function EditarManza(Cod_Manzana) {
+        const xhrEditarManza = new XMLHttpRequest();
+        xhrEditarManza.open('POST', `/editar-manzanas/${Cod_Manzana}`, true);
+        xhrEditarManza.setRequestHeader('Content-Type', 'application/json');
+        xhrEditarManza.onreadystatechange = function () {
+            if (xhrEditarManza.readyState === 4) {
+                if (xhrEditarManza.status === 200) {
+                    window.location = `../Vistas/HTML/actualizarManza.html?id=${Cod_Manzana}`;
+                } else {
+                    console.error('Error al editar servicio');
+                }
+        }
+    };
+    xhrEditarManza.send(JSON.stringify({ Cod_Manzana: Cod_Manzana }));
+}
+function EliminarServicio(Cod_Servicio) {
+        const xhrEliminarServicio = new XMLHttpRequest();
+        xhrEliminarServicio.open('DELETE', `/eliminar-servicio/${Cod_Servicio}`, true);
+        xhrEliminarServicio.setRequestHeader('Content-Type', 'application/json');
+        xhrEliminarServicio.onreadystatechange = function () {
+            if (xhrEliminarServicio.readyState === 4) {
+                if (xhrEliminarServicio.status === 200) {
+                    window.reload();
+                } else {
+                    console.error('Error al editar servicio');
+                }
+        }
+    };
+    xhrEliminarServicio.send(JSON.stringify({ Cod_Servicio: Cod_Servicio}));
+}
+function CrearServicio() {
+        const xhrCrearServicio = new XMLHttpRequest();
+        xhrCrearServicio.open('POST', '/crear-servicio', true);
+        xhrCrearServicio.setRequestHeader('Content-Type', 'application/json');
+        xhrCrearServicio.onreadystatechange = function () {
+            if (xhrCrearServicio.readyState === 4) {
+                if (xhrCrearServicio.status === 200) {
+                    window.location = '../Vistas/HTML/CrearServicio.html';
+                } else {
+                    console.error('Error al editar servicio');
+                }
+        }
+    };
+    xhrCrearServicio.send();
+}
+function EliminarUsuarios(Id_Mujer) {
+        const xhrEliminarUsuarios = new XMLHttpRequest();
+        xhrEliminarUsuarios.open('DELETE', `/eliminar-Usuario/${Id_Mujer}`, true);
+        xhrEliminarUsuarios.setRequestHeader('Content-Type', 'application/json');
+        xhrEliminarUsuarios.onreadystatechange = function () {
+            if (xhrEliminarUsuarios.readyState === 4) {
+                if (xhrEliminarUsuarios.status === 200) {
+                    window.reload();
+                } else {
+                    console.error('Error al editar servicio');
+                }
+        }
+    };
+    xhrEliminarUsuarios.send(JSON.stringify({ Id_Mujer:Id_Mujer}));
+}
+function CrearManza() {
+        const xhrCrearManzana = new XMLHttpRequest();
+        xhrCrearManzana.open('POST', '/crear-manzana', true);
+        xhrCrearManzana.setRequestHeader('Content-Type', 'application/json');
+        xhrCrearManzana.onreadystatechange = function () {
+            if (xhrCrearManzana.readyState === 4) {
+                if (xhrCrearManzana.status === 200) {
+                    window.location = '../Vistas/HTML/CrearManzana.html';
+                } else {
+                    console.error('Error al editar servicio');
+                }
+        }
+    };
+    xhrCrearManzana.send();
+}
+botonCerrarSesion.addEventListener('click', () => {
+            const xhrCerrarSesion = new XMLHttpRequest();
+            xhrCerrarSesion.open('POST', '/cerrar-sesion', true);
+            xhrCerrarSesion.onreadystatechange = function () {
+                if (xhrCerrarSesion.readyState === 4) {
+                    if (xhrCerrarSesion.status === 200) {
+                        alert('Adios');
+                        window.location='../Vistas/HTML/cerrarsesion.html';
+                    } else {
+                        console.error('Error al cerrar sesión.');
+                        alert('No se pudo cerrar la sesión.');
+                    }
+                }
+            }
+            xhrCerrarSesion.send();
+        })
+    
+        window.onload = function () {
+            window.history.forward();
+        };
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    </script>
+</body>
+</html>

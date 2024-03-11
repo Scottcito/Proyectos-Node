@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/index.css">
+    <link href="../css/output.css" rel="stylesheet">
+    <link rel="shortcut icon" href="../imagenes/logo-simbolo-mc_.ico" type="image/x-icon">
+
+    
+    <title>Usuario</title>
+</head>
+<body>
+    <div id="contain-body">
+    <h1 id="nMujeres">Hola,!</h1><br>
+    <button id="s_disponibles">Servicios disponibles</button>
+    <div id="contenedor_servicios" style="display: none;">
+        <form action="" id="formularioSeleServ">
+            <ul id="lista_servicios"></ul>
+            <input type="datetime-local" id="fechaHora" name="fechaHora">
+            <br>
+            <button type="submit" id="SaveService">Guardar Servicio</button>
+        </form>
+        <br>
+    </div>
+    <button id="s_Seleccionados">Servicios Seleccionados</button>
+    <button id="botonCerrarSesion">Cerrar Sesión</button>
+   <div id="TablaServ">
+
+   </div>
+</div>
+    <script>
+          document.addEventListener('DOMContentLoaded',()=>{
+            const xhrUsuario=new XMLHttpRequest();
+            xhrUsuario.open('POST','/obtener-usuario',true)
+            xhrUsuario.onreadystatechange=function(){
+                if(xhrUsuario.readyState===4){
+                    if(xhrUsuario.status===200){
+                        const usuario=JSON.parse(xhrUsuario.responseText);
+                        document.getElementById('nMujeres').textContent=`Bienvenid@: ${usuario.Nombres}`;
+                    }
+                    else{
+                        console.error('Error al obtener el usuario',error)
+                    }
+                }
+            }
+            xhrUsuario.send();
+              const params=new URLSearchParams(window.location.search);
+              const usuario=params.get('usuario');
+              //Constantes del div y formulario del primer botón
+              const botonCerrarSesion=document.getElementById('botonCerrarSesion');
+              const TablaServ=document.getElementById('TablaServ');
+              const lista_ServUsuario=document.getElementById('lista_ServUsuario');
+              const fecha_Serv=document.getElementById('fecha_Serv');
+              const s_Seleccionados=document.getElementById('s_Seleccionados');
+              const contenedor_servicios=document.getElementById('contenedor_servicios');
+              const formularioSeleServ=document.getElementById('formularioSeleServ');
+              const s_disponibles=document.getElementById('s_disponibles');
+              const lista_servicios=document.getElementById('lista_servicios');
+              s_disponibles.addEventListener('click',()=>{
+                  const xhr= new XMLHttpRequest();//Creamos una peticion
+                  xhr.open('POST','/obtener-servicio-usuario',true);//Haremos una apertura de la ruta impuesta
+                  xhr.setRequestHeader('Content-Type','application/json');//Transformamos todo a JSON
+                  xhr.onreadystatechange=function(){//Verificamos si el estado es 4 correcto y 200 De HTTP
+                      if(xhr.readyState===4){
+                          if(xhr.status===200){
+                              const data=JSON.parse(xhr.responseText);
+                              lista_servicios.innerHTML=data
+                              .servicios.map(servicio=>`<li><label><input type="checkbox" 
+                                  name="servicios" value="${servicio}">${servicio}</li></label>
+                                  `).join('');
+                                  contenedor_servicios.style.display='inline';
+                          }
+                          else{
+                              console.error('Error al obtener servicios del usuario');
+                          }
+                      }
+                  };
+                  xhr.send();
+              })
+              formularioSeleServ.addEventListener('submit',async(event)=>{
+                event.preventDefault();
+                const servicio_Selec=Array.from(formularioSeleServ.elements['servicios'])
+                .filter(checkbox=>checkbox.checked)
+                .map(checkbox=>checkbox.value);
+                const fechaHora=formularioSeleServ.elements['fechaHora'].value;
+                const xhrguardado= new XMLHttpRequest();//Creamos una peticion
+                xhrguardado.open('POST','/guardar-servicio-usuario',true);//Haremos una apertura de la ruta impuesta
+                xhrguardado.setRequestHeader('Content-Type','application/json');//Transformamos todo a JSON
+                xhrguardado.onreadystatechange=function(){//Verificamos si el estado es 4 correcto y 200 De HTTP
+                    if(xhrguardado.readyState===4){
+                        if(xhrguardado.status===200){
+                            s_Seleccionados.style.marginLeft='44%';
+                            alert('Datos guardados');
+                            location.reload();
+                        }
+                        
+                        else{
+                            console.error('Error al guardar servicios del usuario')
+                            alert('Error al guardar los servicios del usuario.')
+                        }
+                    }
+                };
+                xhrguardado.send(JSON.stringify({usuario,servicios: servicio_Selec, fechaHora:fechaHora}));  
+              })
+                //Funcionalidad del segundo botón
+                s_Seleccionados.addEventListener('click',()=>{
+                    const xhrservicios= new XMLHttpRequest();
+                    xhrservicios.open('POST','/buscar-servicios-usuarios',true);
+                    xhrservicios.setRequestHeader('Content-Type','application/json');//Transformamos todo a JSON
+                    xhrservicios.onreadystatechange=function(){//Verificamos si el estado es 4 correcto y 200 De HTTP
+                        if(xhrservicios.readyState===4){
+                            if(xhrservicios.status===200){
+                                const data=JSON.parse(xhrservicios.responseText);
+                                TablaServ.innerHTML = data.lists_ServUsuario.map(servicio => `
+                                <h1 id="nUsuarioServicios">
+                                 Servicios Disponibles
+                                </h1>
+                                <div id="lista_ServUsuario">
+                                    <ul> 
+                                        <li><br>${servicio[0]}<br></li>
+                                            <li id="fecha_Serv" data-fecha-hora="${new Date(servicio[1]).toISOString()}">
+                                                ${new Date(servicio[1]).toUTCString()}<br><br>
+                                            </li>
+                                    </ul>
+                                        <button id="DeleteButton" data-id="${servicio[2]}">Borrar Servicio</button>
+                                </div>
+                                    <br><br>
+                                `).join('');
+                                const nUsuarioServicios = document.getElementById('nUsuarioServicios');
+                                    if (nUsuarioServicios) {
+                                    nUsuarioServicios.textContent = 'Servicios disponibles';
+                                    }
+                                TablaServ.style.display = 'block';
+                                TablaServ.style.marginLeft='28%';
+                                TablaServ.style.marginTop='7%';
+                                TablaServ.style.border='1px black solid';
+                                TablaServ.style.width='55%';
+                                TablaServ.style.backgroundColor='rgba(209, 208, 208, 0.7)';  
+                                TablaServ.style.textAlign="center";
+                                
+                                const DeleteButtons=document.querySelectorAll('#DeleteButton');
+                                console.log(DeleteButtons)
+                                for (const botonesDelete of DeleteButtons) {
+
+                                    botonesDelete.addEventListener('click',async()=>{
+                                        console.log(botonesDelete)
+                                    event.preventDefault();
+                                    const fecha_Servo = botonesDelete.parentElement.querySelector('#fecha_Serv').getAttribute('data-fecha-hora');
+                                    const ano = fecha_Servo.slice(0, 4);
+                                    const mes = fecha_Servo.slice(5, 7);
+                                    const dia = fecha_Servo.slice(8, 10);
+                                    const hora = fecha_Servo.slice(11, 13);
+                                    const minutos = fecha_Servo.slice(14, 16);
+                                    const segundos = fecha_Servo.slice(17, 19);
+                                    const fecha_Servi = `${ano}-${mes}-${dia} ${hora}:${minutos}:${segundos}`;
+                                    console.log(fecha_Servi)
+                                    const deleteid = botonesDelete.getAttribute('data-id');
+                                    const xhrdelete= new XMLHttpRequest();
+                                    xhrdelete.open('DELETE', '/eliminar-solicitudes',true);
+                                    xhrdelete.setRequestHeader('Content-Type','application/json');//Transformamos todo a JSON
+                                    xhrdelete.onreadystatechange=function(){//Verificamos si el estado es 4 correcto y 200 De HTTP
+                                        if(xhrdelete.readyState===4){
+                                            if(xhrdelete.status===200){
+                                                const data=JSON.parse(xhrdelete.responseText);
+                                                alert('Datos eliminados correctamente');
+                                                location.reload();
+                                            }
+                                            else{
+                                                console.error('Error al eliminar datos.')
+                                                alert('No se pudieron eliminar los datos.')
+                                            }
+                                        }
+                                    }
+                                xhrdelete.send(JSON.stringify({deleteid,fecha_Servi}));
+                            })
+                        }
+                            }
+                            else{
+                                console.error('Error al obtener servicios del usuario');
+                            }
+                        }
+                    };
+                    xhrservicios.send();
+                    });
+        
+          botonCerrarSesion.addEventListener('click', () => {
+            const xhrCerrarSesion = new XMLHttpRequest();
+            xhrCerrarSesion.open('POST', '/cerrar-sesion', true);
+            xhrCerrarSesion.onreadystatechange = function () {
+                if (xhrCerrarSesion.readyState === 4) {
+                    if (xhrCerrarSesion.status === 200) {
+                        alert('Adios');
+                        window.location='../Vistas/HTML/cerrarsesion.html';
+                    } else {
+                        console.error('Error al cerrar sesión.');
+                        alert('No se pudo cerrar la sesión.');
+                    }
+                }
+            }
+            xhrCerrarSesion.send();
+        })
+    
+        window.onload = function () {
+            window.history.forward();
+        };
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+          
+            
+}
+)
+         
+      </script>
+</body>
+</html>

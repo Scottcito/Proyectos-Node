@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "init": "^0.1.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.9.0",
+    "nodemon": "^3.0.3"
+  },
+  "scripts": {
+    "nd": "nodemon C:/Users/APRENDIZ/Downloads/Manzanasdelcuidado/controller/controlador.js",
+    "nod": "nodemon C:/Users/Scott/Downloads/Manzanasdelcuidado/controller/controlador.js",
+    "nodes": "nodemon C:/Users/SENA/Downloads/Manzanasdelcuidado/controller/controlador.js"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

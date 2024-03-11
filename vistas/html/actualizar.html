@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="shortcut icon" href="/imagenes/logo-simbolo-mc_.ico" type="image/x-icon">
+    <link href="/css/output.css" rel="stylesheet">
+    <title>Registrarse</title>
+</head>
+<body class="bg-gray-100">
+    <div id="TextoRegistro" class="text-center mt-8 mr-2">
+        <p class="text-lg font-semibold">Registre sus datos</p>
+    </div>
+    <form id="editarUsuarioForm" class="mx-auto max-w-xs mt-8 p-8 bg-white shadow-md rounded-lg formulario" method="post">
+        <label for="Tipo_Documen" class="block mb-2">Tipo de documento:</label>
+        <select name="Tipo_Documen" id="Tipo_Documen" class="w-full px-4 py-2 border rounded-lg mb-4">
+            <option value="TI">TI</option>
+            <option value="CC">CC</option>
+        </select>
+        <label for="Tel" class="block mb-2">Teléfono:</label>
+        <input type="tel" name="Tel" id="Tel" class="w-full px-4 py-2 border rounded-lg mb-4">
+        <label for="Correo_Elec" class="block mb-2">Correo Electrónico:</label>
+        <input type="email" name="Correo_Elec" id="Correo_Elec" class="w-full px-4 py-2 border rounded-lg mb-4">
+        <label for="Ciudad" class="block mb-2">Ciudad:</label>
+        <input type="text" name="Ciudad" id="Ciudad" class="w-full px-4 py-2 border rounded-lg mb-4">
+        <label for="Direccion" class="block mb-2">Dirección:</label>
+        <input type="text" name="Direccion" id="Direccion" class="w-full px-4 py-2 border rounded-lg mb-4">
+        <select name="FkManzana" id="FkManzana" class="w-full px-4 py-2 border rounded-lg mb-4">
+            <option value="1">Bosa</option>
+            <option value="2">Suba</option>
+            <option value="3">Chapinero</option>    
+        </select>
+        <button id="b2" type="submit" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600">Enviar</button>
+        <a href="../html/index.html" class="block mt-4"><button id="b2" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">Atras</button></a> 
+    </form>
+    <script>
+        // Función para obtener el ID del usuario de la URL
+        function obtenerIdUsuario() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Obtener el ID del usuario
+        const Id_Mujer = obtenerIdUsuario();
+
+        // Actualizar la acción del formulario con el ID del usuario
+        document.getElementById('editarUsuarioForm').action = `http://localhost:3000/editar-usu/${Id_Mujer}`;
+    </script>
+</body>
+</html>
